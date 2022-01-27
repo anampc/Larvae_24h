@@ -1,0 +1,305 @@
+---
+title: "Survivorship of swimming larvae"
+author: "Ana M. Palacio & Xaymara Serrano"
+date: "`r Sys.Date()`"
+output:
+  html_document:
+      toc: true
+      df_print: paged
+      theme: united
+      code_folding: hide
+bibliography: packages.bib
+nocite: '@*'
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, warning=FALSE, message=FALSE)
+```
+
+# General project set-up 
+
+```{r libraries, results="hide"}
+
+# Load all libraries and sources required to run the script
+    library(tidyverse)
+    library(ggthemes)
+    library(survival)
+    library(survminer)
+    library(gtsummary)
+    library(ggplot2)
+
+  library(lme4)
+  library(multcomp)
+  library(multcompView)
+  library(emmeans)
+  library(effects)
+  library(lmerTest)
+   
+  ggthe_bw<-theme_bw()+
+    theme(plot.background=element_blank(),
+          panel.grid= element_blank(),
+          legend.box.background = element_rect(),
+          panel.background =element_rect(fill = NA, color = "black")
+          )
+  
+```
+
+# 1. LMER wit sq data 
+
+## Data
+
+```{r}
+# Data
+    Survival.data<-read.csv("Data/Survival_24h.csv", header = TRUE)
+    summary(Survival.data)
+    
+    Survival.data$Replicate<-factor(Survival.data$Replicate, ordered = F)
+    
+    Survival.data$Treatment<-factor(Survival.data$Treatment, 
+                                   levels=c("Control", "Low Reef","High Reef", 
+                                            "Low Port","High Port"))
+    summary(Survival.data$Treatment)
+```
+
+## Plot
+```{r}
+Surv<- ggplot(Survival.data, aes (Treatment, Prop.survived)) +
+  geom_boxplot ()+
+  stat_summary(fun.data = "mean_cl_boot",geom = "errorbar", width = 0.2 )+
+  stat_summary(fun.y=mean, geom="point") + 
+  #geom_point(shape=21)+
+
+  geom_jitter(alpha=0.5, shape=21)+
+  theme(legend.position = "bottom")+
+  scale_y_continuous(limits = c(0, 1),
+                         breaks = seq(0,1,0.2),  
+                         expand = c(0.01, 0.01),
+                         name=("Survovorship proportion")) +
+  ggthe_bw
+Surv
+```
+
+## Model 1 
+
+```{r}
+ LM_1 <- lmer(Prop.survived.SQRT.ASIN.~ Treatment + 
+                              (1|Replicate), REML=TRUE, data= Survival.data)
+  summary(LM_1)
+  anova(LM_1)
+  ranova(LM_1)
+  step(LM_1)
+  plot(LM_1)
+  
+# Pairwise comparisons
+  # Day specific comparisons
+  Sw.emmc<-emmeans(LM_1, ~Treatment)
+  Sw_groups<-cld(Sw.emmc)
+  Sw_groups
+  
+```
+
+# Survivorship and HZ ratio
+
+## Data 2 
+
+```{r}
+#R1
+Alive <- factor(rep(c("swimming","dead"), c(221, 29)), 
+                levels=c("swimming","dead"))  
+spi <- c(47, 40, 38,46, 50) # cell counts
+dpi <- c(3, 10, 12, 4, 0) # cell counts
+Treatment <- c("Control","High Port","High Reef","Low Port","Low Reef")
+Treatment <- factor(c(rep(Treatment, spi), 
+                rep(Treatment, dpi)), levels = Treatment)
+dat1 <- data.frame(Alive,Treatment)
+dat1$Replicate<-"R1"
+summary(dat1)
+
+
+#R2
+Alive <- factor(rep(c("swimming","dead"), c(233, 17)), 
+                levels=c("swimming","dead"))  
+spi <- c(46, 47, 42,49, 49) # cell counts
+dpi <- c(4, 3, 8, 1, 1) # cell counts
+Treatment <- c("Control","High Port","High Reef","Low Port","Low Reef")
+Treatment <- factor(c(rep(Treatment, spi), 
+                rep(Treatment, dpi)), levels = Treatment)
+dat2 <- data.frame(Alive,Treatment)
+dat2$Replicate<-"R2"
+summary(dat2)
+
+#R3
+Alive <- factor(rep(c("swimming","dead"), c(232, 18)), 
+                levels=c("swimming","dead"))  
+spi <- c(45, 43, 50, 44, 50) # cell counts
+dpi <- c(5, 7, 0, 6, 0) # cell counts
+Treatment <- c("Control","High Port","High Reef","Low Port","Low Reef")
+Treatment <- factor(c(rep(Treatment, spi), 
+                rep(Treatment, dpi)), levels = Treatment)
+dat3 <- data.frame(Alive,Treatment)
+dat3$Replicate<-"R3"
+summary(dat3)
+
+#R4
+Alive <- factor(rep(c("swimming","dead"), c(245, 5)), 
+                levels=c("swimming","dead"))  
+spi <- c(50, 47, 50, 48, 50) # cell counts
+dpi <- c(0, 3, 0, 2, 0) # cell counts
+Treatment <- c("Control","High Port","High Reef","Low Port","Low Reef")
+Treatment <- factor(c(rep(Treatment, spi), 
+                rep(Treatment, dpi)), levels = Treatment)
+dat4 <- data.frame(Alive,Treatment)
+dat4$Replicate<-"R4"
+summary(dat4)
+
+#R5
+Alive <- factor(rep(c("swimming","dead"), c(222, 28)), 
+                levels=c("swimming","dead"))  
+spi <- c(50, 40, 48, 39, 45) # cell counts
+dpi <- c(0, 10, 2, 11, 5) # cell counts
+Treatment <- c("Control","High Port","High Reef","Low Port","Low Reef")
+Treatment <- factor(c(rep(Treatment, spi), 
+                rep(Treatment, dpi)), levels = Treatment)
+dat5 <- data.frame(Alive,Treatment)
+dat5$Replicate<-"R5"
+summary(dat5)
+
+#R6
+Alive <- factor(rep(c("swimming","dead"), c(209, 41)), 
+                levels=c("swimming","dead"))  
+spi <- c(43, 35, 36,47, 48) # cell counts
+dpi <- c(7, 15, 14, 3, 2) # cell counts
+Treatment <- c("Control","High Port","High Reef","Low Port","Low Reef")
+Treatment <- factor(c(rep(Treatment, spi), 
+                rep(Treatment, dpi)), levels = Treatment)
+dat6 <- data.frame(Alive,Treatment)
+dat6$Replicate<-"R6"
+summary(dat6)
+
+#R7
+Alive <- factor(rep(c("swimming","dead"), c(219, 31)), 
+                levels=c("swimming","dead"))  
+spi <- c(50, 43, 39,43, 44) # cell counts
+dpi <- c(0, 7, 11, 7, 6) # cell counts
+Treatment <- c("Control","High Port","High Reef","Low Port","Low Reef")
+Treatment <- factor(c(rep(Treatment, spi), 
+                rep(Treatment, dpi)), levels = Treatment)
+dat7 <- data.frame(Alive,Treatment)
+dat7$Replicate<-"R7"
+summary(dat7)
+
+#R8
+Alive <- factor(rep(c("swimming","dead"), c(155, 45)), 
+                levels=c("swimming","dead"))  
+spi <- c(41, 34, 36, 44) # cell counts
+dpi <- c(9, 16, 14, 6) # cell counts
+Treatment <- c("Control","High Port","High Reef","Low Port")
+Treatment <- factor(c(rep(Treatment, spi), 
+                rep(Treatment, dpi)), levels = Treatment)
+dat8 <- data.frame(Alive,Treatment)
+dat8$Replicate<-"R8"
+summary(dat8)
+
+
+#R9
+Alive <- factor(rep(c("swimming","dead"), c(205, 45)), 
+                levels=c("swimming","dead"))  
+spi <- c(45, 40, 39, 41, 40) # cell counts
+dpi <- c(5, 10, 11, 9, 10) # cell counts
+Treatment <- c("Control","High Port","High Reef","Low Port","Low Reef")
+Treatment <- factor(c(rep(Treatment, spi), 
+                rep(Treatment, dpi)), levels = Treatment)
+dat9 <- data.frame(Alive,Treatment)
+dat9$Replicate<-"R9"
+summary(dat9)
+
+#R10
+Alive <- factor(rep(c("swimming","dead"), c(125, 25)), 
+                levels=c("swimming","dead"))  
+spi <- c(48, 31, 46) # cell counts
+dpi <- c(2, 19, 4) # cell counts
+Treatment <- c("Control","High Port","High Reef")
+Treatment <- factor(c(rep(Treatment, spi), 
+                rep(Treatment, dpi)), levels = Treatment)
+dat10 <- data.frame(Alive,Treatment)
+dat10$Replicate<-"R10"
+summary(dat10)
+
+data<-rbind(dat1, dat2, dat3, dat4, dat5, dat6, dat7, dat8, dat9, dat10)
+summary(data)
+
+data$Treatment<-factor(data$Treatment, levels=c("Control", "Low Reef", 
+                                            "Low Port", "High Reef","High Port"))
+
+data$Fu.time_texp<-"1"
+data$Fu.time_texp<-as.numeric(data$Fu.time_texp)
+
+data$Fu.stat_exp<-"0"
+data$Fu.stat_exp[data$Alive=="dead"]<-"1"
+data$Fu.stat_exp<-as.numeric(data$Fu.stat_exp)
+summary(data)
+```
+
+## Model 2: Survivorship analysis
+
+```{r}
+## Add survival object (Fit survival data using the Kaplan-Meier method)
+  surv_object <- Surv(time = data$Fu.time_texp, event = data$Fu.stat_exp)
+  #surv_object 
+
+```
+
+## Treatment model
+
+```{r}
+# Only treatment model
+
+    # Kaplan-Meier estimator. The "log-log" confidence interval is preferred.
+    fit1 <- survfit(surv_object ~ Treatment, data = data)
+    summary(fit1)
+    summary(fit1)$table
+    
+    sd1<-survdiff(surv_object~Treatment, data = data)
+    1 - pchisq(sd1$chisq, length(sd1$n) - 1)# pvalue
+    
+    
+    results<-summary(fit1, times = c(1))
+    save.df <- as.data.frame(results[c("strata", "time", "n.risk", "n.event", "surv", "std.err")])
+    write.csv(save.df, file = "survival.csv")
+    
+   # Treatment_Only<-ggsurvplot(fit1, data = data, pval = TRUE, 
+   #         conf.int = T, risk.table=T, 
+   #         risk.table.y.text = FALSE,
+   #         risk.table.title="Number of fragments at risk") + ggtitle("Treatment")
+   # Treatment_Only
+```
+
+## Cox hazards 
+
+```{r}
+  coxfit <- coxph(surv_object ~ Treatment, data = data)
+    summary(coxfit)
+    coxfit
+    #ggadjustedcurves(coxfit, data=Survival.data, variable = "Treatment")
+    
+    coxfit %>% 
+      gtsummary::tbl_regression(exp = TRUE) 
+  
+  HazardRatio<-ggforest(coxfit, data = data)
+  HazardRatio
+
+#ggsave("HazardRatio.svg", HazardRatio, width=5, height=4,dpi = 300)
+
+```
+
+* Hazard ratios. The exponentiated coefficients (exp(coef)), also known as hazard ratios, give the effect size of covariates. Confidence intervals of the hazard ratios. The summary output also gives upper and lower 95% confidence intervals for the hazard ratio (exp(coef))
+
+* Global statistical significance of the model. p-values for three alternative tests for overall significance of the model: The likelihood-ratio test, Wald test, and score logrank statistics. These three methods are asymptotically equivalent. For large enough N, they will give similar results. For small N, they may differ somewhat. The Likelihood ratio test has better behavior for small sample sizes, so it is generally preferred.
+
+
+# Packages used
+
+```{r}
+# Creates bibliography 
+#knitr::write_bib(c(.packages()), "packages.bib")
+```

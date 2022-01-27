@@ -1,0 +1,48 @@
+Treatment,Replicate,Dead,Swimming,Prop survived,Prop survived SQRT(ASIN)
+Control,1,3,47,0.94,1.11
+Control,2,4,46,0.92,1.08
+Control,3,5,45,0.9,1.06
+Control,4,0,50,1,1.25
+Control,5,0,50,1,1.25
+Control,6,7,43,0.86,1.02
+Control,7,0,50,1,1.25
+Control,8,9,41,0.82,0.98
+Control,9,5,45,0.9,1.06
+Control,10,2,48,0.96,1.13
+Low Reef,1,0,50,1,1.25
+Low Reef,2,1,49,0.98,1.17
+Low Reef,3,0,50,1,1.25
+Low Reef,4,0,50,1,1.25
+Low Reef,5,5,45,0.9,1.06
+Low Reef,6,2,48,0.96,1.13
+Low Reef,7,6,44,0.88,1.04
+Low Reef,9,10,40,0.8,0.96
+High Reef,1,12,38,0.76,0.93
+High Reef,2,8,42,0.84,1
+High Reef,3,0,50,1,1.25
+High Reef,4,0,50,1,1.25
+High Reef,5,2,48,0.96,1.13
+High Reef,6,14,36,0.72,0.9
+High Reef,7,11,39,0.78,0.95
+High Reef,8,14,36,0.72,0.9
+High Reef,9,11,39,0.78,0.95
+High Reef,10,4,46,0.92,1.08
+Low Port,1,4,46,0.92,1.08
+Low Port,2,1,49,0.98,1.17
+Low Port,3,6,44,0.88,1.04
+Low Port,4,2,48,0.96,1.13
+Low Port,5,11,39,0.78,0.95
+Low Port,6,3,47,0.94,1.11
+Low Port,7,7,43,0.86,1.02
+Low Port,8,6,44,0.88,1.04
+Low Port,9,9,41,0.82,0.98
+High Port,1,10,40,0.8,0.96
+High Port,2,3,47,0.94,1.11
+High Port,3,7,43,0.86,1.02
+High Port,4,3,47,0.94,1.11
+High Port,5,10,40,0.8,0.96
+High Port,6,15,35,0.7,0.88
+High Port,7,7,43,0.86,1.02
+High Port,8,16,34,0.68,0.86
+High Port,9,10,40,0.8,0.96
+High Port,10,19,31,0.62,0.82
