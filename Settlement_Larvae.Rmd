@@ -1,0 +1,364 @@
+---
+title: "Settlement"
+author: "Ana M. Palacio & Xaymara Serrano"
+date: "`r Sys.Date()`"
+output:
+  html_document:
+      toc: true
+      df_print: paged
+      theme: united
+      code_folding: hide
+bibliography: packages.bib
+nocite: '@*'
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, warning=FALSE, message=FALSE)
+```
+
+# General project set-up 
+
+```{r libraries, results="hide"}
+
+# Load all libraries and sources required to run the script
+    library(tidyverse)
+    library(ggthemes)
+    library(survival)
+    library(survminer)
+    library(gtsummary)
+    library(ggplot2)
+
+  library(lme4)
+  library(multcomp)
+  library(multcompView)
+  library(emmeans)
+  library(effects)
+  library(lmerTest)
+   
+  ggthe_bw<-theme_bw() +
+    theme(plot.background=element_blank(),
+          panel.grid= element_blank(),
+          legend.box.background = element_rect(),
+          panel.background =element_rect(fill = NA, color = "black")
+          )
+  
+```
+
+# Data
+
+```{r}
+# Data
+    Survival.data<-read.csv("Data/Survival_Settlement_week.csv", header = TRUE)
+    summary(Survival.data)
+    
+    Survival.data$Replicate<-factor(Survival.data$Replicate, ordered = F)
+    
+    Survival.data$Treatment<-factor(Survival.data$Treatment, 
+                                   levels=c("Control", "Low Reef","Low Port", "High Reef", "High Port"))
+    summary(Survival.data$Treatment)
+    
+    Sur_long<-read.csv("Data/Survival_Settlement_week_long.csv", header = TRUE)
+    summary(Sur_long)
+    Sur_long$Treatment<-factor(Sur_long$Treatment, 
+                                   levels=c("Control", "Low Reef","Low Port", "High Reef", "High Port"))
+      Sur_long$Category<-factor(Sur_long$Category, 
+                                   levels=c("Dead", "Un_settled","Settled"))
+      
+      
+```
+
+# 1. Basicl plots
+
+## Plot 1: Xaymara settlememnt proportion (asumme all 15 larvae could settle)
+
+```{r}
+Settle<- ggplot(Survival.data, aes (Treatment, Prop.settled)) +
+  geom_boxplot ()+
+  stat_summary(fun.data = "mean_cl_boot",geom = "errorbar", width = 0.2 )+
+  stat_summary(fun.y=mean, geom="point") + 
+  #geom_point(shape=21)+
+
+  geom_jitter(alpha=0.5, shape=21)+
+  theme(legend.position = "bottom")+
+  scale_y_continuous(limits = c(0, 0.5),
+                         breaks = seq(0,1,0.2),  
+                         expand = c(0.01, 0.01),
+                         name=("Settlement proportion")) +
+  ggthe_bw
+Settle
+
+```
+
+## Plot 2: Settlememnt proportion from alive larvae
+```{r}
+Settle2<- ggplot(Survival.data, aes (Treatment, Prop.settled_alive)) +
+  geom_boxplot ()+
+  stat_summary(fun.data = "mean_cl_boot",geom = "errorbar", width = 0.2 )+
+  stat_summary(fun.y=mean, geom="point") + 
+  #geom_point(shape=21)+
+
+  geom_jitter(alpha=0.5, shape=21)+
+  theme(legend.position = "bottom")+
+  scale_y_continuous(limits = c(0, 0.8),
+                         breaks = seq(0,1,0.2),  
+                         expand = c(0.01, 0.01),
+                         name=("Settlement proportion")) +
+  ggthe_bw
+Settle2
+```
+
+## Plot 3: 1-week survivorship
+```{r}
+Week_surv<- ggplot(Survival.data, aes (Treatment, Prop_survived)) +
+  geom_boxplot ()+
+  stat_summary(fun.data = "mean_cl_boot",geom = "errorbar", width = 0.2 )+
+  stat_summary(fun.y=mean, geom="point") + 
+  #geom_point(shape=21)+
+
+  geom_jitter(alpha=0.5, shape=21)+
+  theme(legend.position = "bottom")+
+  scale_y_continuous(limits = c(0, 1),
+                         breaks = seq(0,1,0.2),  
+                         expand = c(0.01, 0.01),
+                         name=("Survivorship proportion")) +
+  ggthe_bw
+Week_surv
+```
+
+```{r}
+# Grouped
+Spread_<-ggplot(Sur_long, aes(fill=Category, y=Number, x=Treatment)) + 
+    geom_bar(position="dodge", stat="identity")
+
+# Grouped
+Stack<-ggplot(Sur_long, aes(fill=Category, y=Number, x=Treatment)) + 
+    geom_bar(position="fill", stat="identity") +  ggthe_bw
+Stack
+```
+
+# 2. Possible GML and LMs for Xaymara's settlement
+
+```{r}
+## model 1: generalized mixed model
+fit1<-glmer(cbind(N_settled, 15-N_settled) ~Treatment +(1|Replicate),
+ data=Survival.data,family="binomial")
+anova(fit1)
+summary(fit1)
+plot(fit1)
+
+#library(devtools)
+library(sjPlot)
+#install_github("strengejacke/sjPlot")
+# plot fixed effects correlation matrix
+plot_model(fit1, type = "est", show.values=T, show.p = T)
+plot_model(fit1, type = "eff")
+plot_model(fit1, type = "pre")
+
+## model 2: generalized model
+fit2<-glm(cbind(N_settled, 15-N_settled)~Treatment, data=Survival.data,family=binomial)
+anova(fit2)
+summary(fit2)
+plot(fit2)
+plot_model(fit2, type = "est", show.values=T, show.p = T)
+plot_model(fit2, type = "eff") 
+#plot_model(fit2, type = "pre")
+
+anova(fit1, fit2)
+
+
+## model 3: linear model
+fit3<-lm(Prop.settled ~Treatment,data=Survival.data)
+anova(fit3)
+summary(fit3)
+plot(fit3)
+
+## model 4: mixed linar model
+ fit4 <- lmer(Prop.settled.SQRT.ASIN.~ Treatment + (1|Replicate), 
+              REML=TRUE, data= Survival.data)
+  summary(fit4)
+  anova(fit4)
+  ranova(fit4)
+  plot(fit4)
+  
+# Pairwise comparisons
+  # Day specific comparisons
+  Sw.emmc<-emmeans(fit4, ~Treatment)
+  Sw_groups<-cld(Sw.emmc)
+  Sw_groups
+
+```
+
+# 3. Possible GML and LMs for alive's settlement
+
+```{r}
+## model 1: generalized mixed model
+fit5<-glmer(cbind(N_settled, N.alive-N_settled) ~Treatment +(1|Replicate),
+ data=Survival.data,family="binomial")
+anova(fit5)
+summary(fit5)
+plot(fit5)
+
+#library(devtools)
+library(sjPlot)
+#install_github("strengejacke/sjPlot")
+# plot fixed effects correlation matrix
+plot_model(fit5, type = "est")
+plot_model(fit5, type = "eff")
+plot_model(fit5, type = "pre")
+
+## model 2: generalized model
+fit6<-glm(cbind(N_settled, N.alive-N_settled)~Treatment, data=Survival.data,family=binomial)
+anova(fit6)
+summary(fit6)
+plot(fit6)
+plot_model(fit6, type = "est")
+plot_model(fit6, type = "eff")
+plot_model(fit6, type = "pre")
+
+
+## model 3: linear model
+fit7<-lm(Prop.settled_alive ~Treatment,data=Survival.data)
+anova(fit7)
+summary(fit7)
+plot(fit7)
+
+## model 4: mixed linar model
+# fit8 <- lmer(Prop.settled.SQRT.ASIN.~ Treatment + (1|Replicate), 
+#               REML=TRUE, data= Survival.data)
+# summary(fit8)
+#   anova(fit8)
+#   ranova(fit8)
+#   plot(fit8)
+  
+# Pairwise comparisons
+  # Day specific comparisons
+  # Sw.emmc<-emmeans(fit4, ~Treatment)
+  # Sw_groups<-cld(Sw.emmc)
+  # Sw_groups
+
+```
+
+# 4. Possible GML and LMs for survivorship
+
+```{r}
+## model 1: generalized mixed model
+fit1<-glmer(cbind(N.alive, N_Dead) ~Treatment +(1|Replicate),
+ data=Survival.data,family="binomial")
+anova(fit1)
+summary(fit1)
+plot(fit1)
+
+#library(devtools)
+library(sjPlot)
+#install_github("strengejacke/sjPlot")
+# plot fixed effects correlation matrix
+plot_model(fit1, type = "est")
+plot_model(fit1, type = "eff")
+plot_model(fit1, type = "pre")
+
+## model 2: generalized model
+fit2<-glm(cbind(N.alive, N_Dead)~Treatment, data=Survival.data,family=binomial)
+anova(fit2)
+summary(fit2)
+plot(fit2)
+plot_model(fit2, type = "est")
+plot_model(fit2, type = "eff")
+plot_model(fit2, type = "pre")
+
+
+## model 3: linear model
+fit3<-lm(Prop_dead ~Treatment,data=Survival.data)
+anova(fit3)
+summary(fit3)
+plot(fit3)
+
+## model 4: mixed linar model
+ # fit4 <- lmer(Prop.settled.SQRT.ASIN.~ Treatment + (1|Replicate), 
+ #              REML=TRUE, data= Survival.data)
+ #  summary(fit4)
+ #  anova(fit4)
+ #  ranova(fit4)
+ #  plot(fit4)
+ #  
+# Pairwise comparisons
+  # Day specific comparisons
+  # Sw.emmc<-emmeans(fit4, ~Treatment)
+  # Sw_groups<-cld(Sw.emmc)
+  # Sw_groups
+
+```
+
+# 5.Survivorship and HZ ratio
+
+```{r}
+
+# data<-Survival.data
+# data$Fu.time_texp<-"1"
+# data$Fu.time_texp<-as.numeric(data$Fu.time_texp)
+# 
+# data$Fu.stat_exp<-"0"
+# data$Fu.stat_exp[data$Alive=="dead"]<-"1"
+# data$Fu.stat_exp<-as.numeric(data$Fu.stat_exp)
+# summary(data)
+
+```
+
+
+## Model 2: Survivorship analysis
+
+```{r}
+## Add survival object (Fit survival data using the Kaplan-Meier method)
+  # surv_object <- Surv(time = data$Fu.time_texp, event = data$Fu.stat_exp)
+  #surv_object 
+
+```
+
+## Treatment model
+
+```{r}
+# Only treatment model
+
+   #  # Kaplan-Meier estimator. The "log-log" confidence interval is preferred.
+   #  fit1 <- survfit(surv_object ~ Treatment, data = data)
+   #  summary(fit1)
+   #  summary(fit1)$table
+   #  
+   #  sd1<-survdiff(surv_object~Treatment, data = data)
+   #  1 - pchisq(sd1$chisq, length(sd1$n) - 1)# pvalue
+   #  
+   #  
+   #  results<-summary(fit1, times = c(1))
+   #  save.df <- as.data.frame(results[c("strata", "time", "n.risk", "n.event", "surv", "std.err")])
+   #  write.csv(save.df, file = "survival.csv")
+   #  
+   # # Treatment_Only<-ggsurvplot(fit1, data = data, pval = TRUE, 
+   # #         conf.int = T, risk.table=T, 
+   # #         risk.table.y.text = FALSE,
+   # #         risk.table.title="Number of fragments at risk") + ggtitle("Treatment")
+   # # Treatment_Only
+```
+
+## Cox hazards 
+
+```{r}
+  # coxfit <- coxph(surv_object ~ Treatment, data = data)
+  #   summary(coxfit)
+  #   coxfit
+  #   #ggadjustedcurves(coxfit, data=Survival.data, variable = "Treatment")
+  #   
+  #   coxfit %>% 
+  #     gtsummary::tbl_regression(exp = TRUE) 
+  # 
+  # HazardRatio<-ggforest(coxfit, data = data)
+  # HazardRatio
+
+#ggsave("HazardRatio.svg", HazardRatio, width=5, height=4,dpi = 300)
+
+```
+
+# Packages used
+
+```{r}
+# Creates bibliography 
+#knitr::write_bib(c(.packages()), "packages.bib")
+```

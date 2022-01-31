@@ -1,0 +1,133 @@
+Treatment,Replicate,Category,Number,Proportion
+Control,1,Dead,4,0.266666666666667
+Control,2,Dead,4,0.266666666666667
+Control,3,Dead,7,0.466666666666667
+Control,4,Dead,3,0.2
+Control,5,Dead,0,0
+Control,6,Dead,7,0.466666666666667
+Control,7,Dead,2,0.133333333333333
+Control,8,Dead,7,0.466666666666667
+Control,9,Dead,1,0.066666666666667
+Low Reef,1,Dead,6,0.4
+Low Reef,2,Dead,4,0.266666666666667
+Low Reef,3,Dead,3,0.2
+Low Reef,4,Dead,4,0.266666666666667
+Low Reef,5,Dead,4,0.266666666666667
+Low Reef,6,Dead,4,0.266666666666667
+Low Reef,7,Dead,4,0.266666666666667
+Low Reef,8,Dead,2,0.133333333333333
+High Reef,1,Dead,6,0.4
+High Reef,2,Dead,3,0.2
+High Reef,3,Dead,3,0.2
+High Reef,4,Dead,7,0.466666666666667
+High Reef,5,Dead,2,0.133333333333333
+High Reef,6,Dead,8,0.533333333333333
+High Reef,7,Dead,3,0.2
+High Reef,8,Dead,1,0.066666666666667
+High Reef,9,Dead,5,0.333333333333333
+Low Port,1,Dead,6,0.4
+Low Port,2,Dead,5,0.333333333333333
+Low Port,3,Dead,2,0.133333333333333
+Low Port,4,Dead,3,0.2
+Low Port,5,Dead,8,0.533333333333333
+Low Port,6,Dead,2,0.133333333333333
+Low Port,7,Dead,4,0.266666666666667
+Low Port,8,Dead,3,0.2
+Low Port,9,Dead,2,0.133333333333333
+High Port,1,Dead,2,0.133333333333333
+High Port,2,Dead,10,0.666666666666667
+High Port,3,Dead,9,0.6
+High Port,4,Dead,4,0.266666666666667
+High Port,5,Dead,5,0.333333333333333
+High Port,6,Dead,5,0.333333333333333
+High Port,7,Dead,3,0.2
+High Port,8,Dead,3,0.2
+High Port,9,Dead,7,0.466666666666667
+Control,1,Settled,3,0.2
+Control,2,Settled,2,0.13
+Control,3,Settled,2,0.13
+Control,4,Settled,2,0.13
+Control,5,Settled,6,0.4
+Control,6,Settled,3,0.2
+Control,7,Settled,4,0.27
+Control,8,Settled,3,0.2
+Control,9,Settled,4,0.27
+Low Reef,1,Settled,4,0.27
+Low Reef,2,Settled,5,0.33
+Low Reef,3,Settled,3,0.2
+Low Reef,4,Settled,0,0
+Low Reef,5,Settled,2,0.13
+Low Reef,6,Settled,3,0.2
+Low Reef,7,Settled,5,0.33
+Low Reef,8,Settled,4,0.27
+High Reef,1,Settled,3,0.2
+High Reef,2,Settled,2,0.13
+High Reef,3,Settled,2,0.13
+High Reef,4,Settled,1,0.07
+High Reef,5,Settled,2,0.13
+High Reef,6,Settled,2,0.13
+High Reef,7,Settled,3,0.2
+High Reef,8,Settled,0,0
+High Reef,9,Settled,1,0.07
+Low Port,1,Settled,1,0.07
+Low Port,2,Settled,2,0.13
+Low Port,3,Settled,3,0.2
+Low Port,4,Settled,1,0.07
+Low Port,5,Settled,1,0.07
+Low Port,6,Settled,2,0.13
+Low Port,7,Settled,1,0.07
+Low Port,8,Settled,1,0.07
+Low Port,9,Settled,0,0
+High Port,1,Settled,1,0.07
+High Port,2,Settled,3,0.2
+High Port,3,Settled,2,0.13
+High Port,4,Settled,3,0.2
+High Port,5,Settled,1,0.07
+High Port,6,Settled,1,0.07
+High Port,7,Settled,2,0.13
+High Port,8,Settled,0,0
+High Port,9,Settled,0,0
+Control,1,Un_settled,8,0.533333333333333
+Control,2,Un_settled,9,0.603333333333333
+Control,3,Un_settled,6,0.403333333333333
+Control,4,Un_settled,10,0.67
+Control,5,Un_settled,9,0.6
+Control,6,Un_settled,5,0.333333333333333
+Control,7,Un_settled,9,0.596666666666667
+Control,8,Un_settled,5,0.333333333333333
+Control,9,Un_settled,10,0.663333333333333
+Low Reef,1,Un_settled,5,0.33
+Low Reef,2,Un_settled,6,0.403333333333333
+Low Reef,3,Un_settled,9,0.6
+Low Reef,4,Un_settled,11,0.733333333333333
+Low Reef,5,Un_settled,9,0.603333333333333
+Low Reef,6,Un_settled,8,0.533333333333333
+Low Reef,7,Un_settled,6,0.403333333333333
+Low Reef,8,Un_settled,9,0.596666666666667
+High Reef,1,Un_settled,6,0.4
+High Reef,2,Un_settled,10,0.67
+High Reef,3,Un_settled,10,0.67
+High Reef,4,Un_settled,7,0.463333333333333
+High Reef,5,Un_settled,11,0.736666666666667
+High Reef,6,Un_settled,5,0.336666666666667
+High Reef,7,Un_settled,9,0.6
+High Reef,8,Un_settled,14,0.933333333333333
+High Reef,9,Un_settled,9,0.596666666666667
+Low Port,1,Un_settled,8,0.53
+Low Port,2,Un_settled,8,0.536666666666667
+Low Port,3,Un_settled,10,0.666666666666667
+Low Port,4,Un_settled,11,0.73
+Low Port,5,Un_settled,6,0.396666666666667
+Low Port,6,Un_settled,11,0.736666666666667
+Low Port,7,Un_settled,10,0.663333333333333
+Low Port,8,Un_settled,11,0.73
+Low Port,9,Un_settled,13,0.866666666666667
+High Port,1,Un_settled,12,0.796666666666667
+High Port,2,Un_settled,2,0.133333333333333
+High Port,3,Un_settled,4,0.27
+High Port,4,Un_settled,8,0.533333333333333
+High Port,5,Un_settled,9,0.596666666666667
+High Port,6,Un_settled,9,0.596666666666667
+High Port,7,Un_settled,10,0.67
+High Port,8,Un_settled,12,0.8
+High Port,9,Un_settled,8,0.533333333333333

@@ -1,0 +1,6 @@
+"","strata","time","n.risk","n.event","surv","std.err"
+"1","Treatment=Control",1,500,35,0.93,0.0114105214604767
+"2","Treatment=Low Reef",1,400,24,0.94,0.0118743420870379
+"3","Treatment=Low Port",1,450,49,0.891111111111111,0.0146842393791917
+"4","Treatment=High Reef",1,500,76,0.848,0.0160559023415067
+"5","Treatment=High Port",1,500,100,0.8,0.0178885438199983

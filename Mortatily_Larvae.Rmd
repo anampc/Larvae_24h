@@ -29,6 +29,7 @@ knitr::opts_chunk$set(echo = TRUE, warning=FALSE, message=FALSE)
     library(ggplot2)
 
   library(lme4)
+
   library(multcomp)
   library(multcompView)
   library(emmeans)
@@ -79,23 +80,56 @@ Surv<- ggplot(Survival.data, aes (Treatment, Prop.survived)) +
 Surv
 ```
 
-## Model 1 
+## Possible GML and LMs 
 
 ```{r}
- LM_1 <- lmer(Prop.survived.SQRT.ASIN.~ Treatment + 
-                              (1|Replicate), REML=TRUE, data= Survival.data)
-  summary(LM_1)
-  anova(LM_1)
-  ranova(LM_1)
-  step(LM_1)
-  plot(LM_1)
+## model 1: generalized mixed model
+fit1<-glmer(cbind(Swimming, Dead) ~Treatment +(1|Replicate),
+ data=Survival.data,family="binomial")
+anova(fit1)
+summary(fit1)
+plot(fit1)
+
+#library(devtools)
+library(sjPlot)
+#install_github("strengejacke/sjPlot")
+# plot fixed effects correlation matrix
+plot_model(fit1, type = "est", show.values=T, show.p = T)
+plot_model(fit1, type = "eff")
+plot_model(fit1, type = "pre")
+
+
+## model 2: generalized model
+fit2<-glm(cbind(Swimming,Dead)~Treatment, data=Survival.data,family=binomial)
+anova(fit2)
+summary(fit2)
+plot(fit2)
+plot_model(fit2, type = "est")
+plot_model(fit2, type = "eff")
+plot_model(fit2, type = "pre")
+
+
+## model 3: linear model
+fit3<-lm(Prop.survived~Treatment,weights=Swimming+Dead,data=Survival.data)
+anova(fit3)
+summary(fit3)
+plot(fit3)
+
+## model 4: mixed linar model
+ fit4 <- lmer(Prop.survived.SQRT.ASIN.~ Treatment + (1|Replicate), 
+              REML=TRUE, weights=Swimming+Dead, data= Survival.data)
+  summary(fit4)
+  anova(fit4)
+  ranova(fit4)
+  step(fit4)
+  plot(fit4)
   
 # Pairwise comparisons
   # Day specific comparisons
-  Sw.emmc<-emmeans(LM_1, ~Treatment)
+  Sw.emmc<-emmeans(fit4, ~Treatment)
   Sw_groups<-cld(Sw.emmc)
   Sw_groups
-  
+
 ```
 
 # Survivorship and HZ ratio
