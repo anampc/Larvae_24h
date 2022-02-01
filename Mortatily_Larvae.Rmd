@@ -360,13 +360,14 @@ summary(data)
     Survival.data2$Replicate<-factor(Survival.data2$Replicate, ordered = F)
     
     Survival.data2$Treatment<-factor(Survival.data2$Treatment, 
-                                   levels=c("Control", "Low Reef", "High Reef", "Low Port", "High Port"))
+                          levels=c("Control", "Low Reef", "High Reef", "Low Port", "High Port"))
     summary(Survival.data2$Treatment)
     
     # Long format
     Sur_long<-read.csv("Data/Survival_Settlement_week_long.csv", header = TRUE)
     summary(Sur_long)
     Sur_long$Treatment<-factor(Sur_long$Treatment, 
+
                                    levels=c("Control", "Low Reef","High Reef", 
                                             "Low Port","High Port"))
     Sur_long$Category<-factor(Sur_long$Category, 
@@ -466,17 +467,16 @@ Stack
   effects2
 
 ## model 2: generalized model
-fit6<-glm(cbind(N_settled, 15-N_settled)~Treatment, data=Survival.data2,family=binomial)
-anova(fit6)
-summary(fit6)
-par(mfrow=c(2,2))
-plot(fit6)
-par(mfrow=c(1,1))
-plot_model(fit6, type = "est", show.values=T, show.p = T)
-plot_model(fit6, type = "eff") 
-#plot_model(fit6, type = "pre")
-
-anova(fit5, fit6)
+  fit6<-glm(cbind(N_settled, 15-N_settled)~Treatment, data=Survival.data2,family=binomial)
+  anova(fit6)
+  summary(fit6)
+  par(mfrow=c(2,2))
+  plot(fit6)
+  par(mfrow=c(1,1))
+  plot_model(fit6, type = "est", show.values=T, show.p = T)
+  plot_model(fit6, type = "eff") 
+  
+  anova(fit5, fit6)
 
 
 ## model 3: linear model
