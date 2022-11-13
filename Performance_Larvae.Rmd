@@ -1,5 +1,5 @@
 ---
-title: "Survivorship of swimming larvae + settlement"
+title: "O. Faveolata larvae performance under sediment treatments"
 author: "Ana M. Palacio & Xaymara Serrano"
 date: "`r Sys.Date()`"
 output:
@@ -99,7 +99,9 @@ Surv
     anova(fit1)
     summary(fit1)
     plot(fit1)
-    
+    1-pchisq(1452.3-1433.9, 1093-1092)
+
+
   odds1<-plot_model(fit1, type = "est", show.values=T, show.p = T) +theme_sjplot()
   odds1
   #ggsave(file="Outputs/odds_survival.svg", plot=odds1, width=4, height=4)
@@ -520,14 +522,7 @@ anova(fit5, fit6)
 
 # Final models
 
-```{r, model summary - survivrship }
-Larvae_models<-list("Survivorship" = fit1, 
-                   "Settlement" = fit6)
-modelsummary(Larvae_models, stars = TRUE, 
-             #statistic = c('std.error', 'p.value', 'conf.int'),
-             title = 'Larvae performance models outputs')
-#modelsummary(Larvae_models, estimate = "p.value")
-
+```{r, model significance}
 
 # Anova models into one dataframe/table
     Larva_models <- data.frame(cbind
@@ -543,6 +538,23 @@ modelsummary(Larvae_models, stars = TRUE,
       pack_rows(., "Survivorship (24 h)", 1, 2) %>% # groups rows with label
       pack_rows(., "Settlement (1 week)", 3, 4) 
 
+#To get the significance for the overall model
+
+#Survivorship
+paste("Survivorship (24 h) X2 =", 1-pchisq(241.35-180.4, 46-42))
+
+#Settlement
+paste("Settlement (1 week) X2 =", 1-pchisq(54.53-37.79, 43-39))
+ 
+```
+
+```{r, model summary - coeficients }
+Larvae_models<-list("Survivorship" = fit1, 
+                   "Settlement" = fit6)
+modelsummary(Larvae_models, stars = TRUE, 
+             #statistic = c('std.error', 'p.value', 'conf.int'),
+             title = 'Larvae performance models outputs')
+#modelsummary(Larvae_models, estimate = "p.value")
 ```
 
 !## Possible GML and LMs for alive's settlement - DO NOT USE
@@ -661,6 +673,195 @@ Figure_S1<-plot_grid( odds1, odds2, labels = "AUTO")
 Figure_S1
 #ggsave(file="Outputs/FigureS1.svg", plot=Figure_S1, width=12, height=4)
 ```
+
+# 3 Respiration (non-significant)
+
+## Data
+
+```{r}
+# Data
+    data<-read.csv("Data/Respiration_larvae.csv", header = TRUE)
+    summary(data)
+    
+    data$Replicate.vial<-factor(data$Replicate.vial, ordered = F)
+    data$Plate<-factor(data$Plate, ordered = F)
+    data$Well<-factor(data$Well, ordered = F)
+    
+    data$Treatment<-factor(data$Treatment, 
+                                levels=c("Control", "Low Reef","High Reef", 
+                                                    "Low Port","High Port"))
+    summary(data$Treatment)
+```
+
+## Basic plots
+
+## Plot-well
+```{r}
+Well<- ggplot(data, aes (Treatment, nmol.min)) +
+  geom_boxplot ()+
+  stat_summary(fun.data = "mean_cl_boot", 
+               geom = "errorbar", width = 0.2, color="blue")+
+  stat_summary(fun=mean, geom="point",  color="blue") + 
+  #geom_point(shape=21)+
+
+  geom_jitter(alpha=0.5, shape=21)+
+  theme(legend.position = "bottom")+
+  scale_y_continuous(limits = c(0, 0.01),
+                     #   breaks = seq(0,1,0.2),  
+                     #   expand = c(0.01, 0.01),
+                     name=("O2 [nmol/min] per well")) +
+  ggthe_bw +
+  facet_grid(~Timepoint)
+Well
+
+Well_6<- ggplot(data, aes (Treatment, nmol.min/6)) +
+  geom_boxplot ()+
+  stat_summary(fun.data = "mean_cl_boot", 
+               geom = "errorbar", width = 0.2, color="blue")+
+  stat_summary(fun=mean, geom="point",  color="blue") + 
+  #geom_point(shape=21)+
+
+  geom_jitter(alpha=0.5, shape=21)+
+  theme(legend.position = "bottom")+
+  scale_y_continuous(limits = c(0, 0.0018),
+                     #   breaks = seq(0,1,0.2),  
+                     #   expand = c(0.01, 0.01),
+                     name=("O2 [nmol/min] per larve (6 in each well)")) +
+  ggthe_bw +
+  facet_grid(~Timepoint)
+Well_6
+
+LogWell<- ggplot(data, aes (Treatment, log(nmol.min))) +
+  geom_boxplot ()+
+  stat_summary(fun.data = "mean_cl_boot",
+               geom = "errorbar", width = 0.2, color="blue")+
+  stat_summary(fun=mean, geom="point", color="blue") + 
+  #geom_point(shape=21)+
+
+  geom_jitter(alpha=0.5, shape=21)+
+  theme(legend.position = "bottom")+
+  scale_y_continuous(#limits = c(0, 1),
+                      #   breaks = seq(0,1,0.2),  
+                      #   expand = c(0.01, 0.01),
+                         name=("Log O2 [nmol/min] per well")) +
+  ggthe_bw +
+  facet_grid(~Timepoint)
+LogWell
+```
+
+## Plot-larvae
+```{r}
+Larvae<- ggplot(data, aes (Treatment, nmol.larva.min)) +
+  geom_boxplot ()+
+  stat_summary(fun.data = "mean_cl_boot",geom = "errorbar", width = 0.2 , color="blue")+
+  stat_summary(fun=mean, geom="point") + 
+  #geom_point(shape=21)+
+
+  geom_jitter(alpha=0.5, shape=21)+
+  theme(legend.position = "bottom")+
+  scale_y_continuous(#limits = c(0, 1),
+                      #   breaks = seq(0,1,0.2),  
+                      #   expand = c(0.01, 0.01),
+                         name=("O2 [nmol/min/larva] corrected")) +
+  ggthe_bw +
+  facet_grid(~Timepoint)
+Larvae
+
+LogLarvae<- ggplot(data, aes (Treatment, log(nmol.larva.min))) +
+  geom_boxplot ()+
+  stat_summary(fun.data = "mean_cl_boot",geom = "errorbar", width = 0.2 )+
+  stat_summary(fun=mean, geom="point") + 
+  #geom_point(shape=21)+
+
+  geom_jitter(alpha=0.5, shape=21)+
+  theme(legend.position = "bottom")+
+  scale_y_continuous(#limits = c(0, 1),
+                      #   breaks = seq(0,1,0.2),  
+                      #   expand = c(0.01, 0.01),
+                         name=("Log O2 [nmol/min/larva] corrected")) +
+  ggthe_bw +
+  facet_grid(~Timepoint)
+LogLarvae
+```
+
+## LMs 
+
+### Expossure (24 h)
+```{r}
+## model 1: LMER for exposure well
+  fit1<-lmerTest::lmer(nmol.min ~Treatment + (1|Replicate.vial),
+              data=data[data$Timepoint=="Exposure",])
+  anova(fit1)
+  ranova(fit1)
+  summary(fit1)
+  plot(fit1)
+  #step(fit1)
+  
+  fit1<-lmerTest::lmer(log(nmol.min) ~Treatment + (1|Replicate.vial),
+              data=data[data$Timepoint=="Exposure",])
+  anova(fit1)
+  ranova(fit1)
+  summary(fit1)
+  plot(fit1)
+  #step(fit1)
+  
+## model 2: LMER for exposure larva
+  fit2<-lmer(nmol.larva.min ~Treatment + (1|Replicate.vial) + (1|Plate..) + (1|Well),
+              data=data[data$Timepoint=="Exposure",])
+  fit2<-lmer(nmol.larva.min ~Treatment + (1|Plate..),
+              data=data[data$Timepoint=="Exposure",])
+  fit2<-lmer(log(nmol.larva.min) ~Treatment + (1|Plate..),
+              data=data[data$Timepoint=="Exposure",])
+  anova(fit2)
+  ranova(fit2)
+  summary(fit2)
+  plot(fit2)
+  step(fit2)
+ 
+
+
+```
+
+### Reovery (1 week)
+
+```{r}
+## model 3: LMER for recovery well
+  # fit3<-lmer(nmol.min ~Treatment + (1|Replicate.vial) + (1|Plate..) + (1|Well),
+  #             data=data[data$Timepoint=="Recovery",])
+  fit3<-lmer(nmol.min ~Treatment + (1|Well),
+              data=data[data$Timepoint=="Recovery",])
+  anova(fit3)
+  ranova(fit3)
+  summary(fit3)
+  plot(fit3)
+  step(fit3)
+  
+  fit3<-lmer(log(nmol.min) ~Treatment + (1|Well),
+              data=data[data$Timepoint=="Recovery",])
+  anova(fit3)
+  ranova(fit3)
+  summary(fit3)
+  plot(fit3)
+  step(fit3)
+  
+## model 4: LMER for exposure larva
+  fit4<-lmer(nmol.larva.min ~Treatment + (1|Replicate.vial) + (1|Plate..) + (1|Well),
+              data=data[data$Timepoint=="Recovery",])
+  fit4<-lmer(log(nmol.larva.min) ~Treatment + (1|Plate..),
+              data=data[data$Timepoint=="Recovery",])
+  
+  anova(fit4)
+  ranova(fit4)
+  summary(fit4)
+  plot(fit4)
+  #step(fit4)  
+# Pairwise comparisons
+  # Day specific comparisons
+  # Sw.emmc<-emmeans(fit4, ~Treatment)
+  # Sw_groups<-cld(Sw.emmc)
+  # Sw_groups
+```
+
 
 # Packages used
 
