@@ -451,7 +451,7 @@ Stack<-ggplot(Sur_long, aes(fill=Category, y=Number, x=Treatment)) +
 Stack
 ```
 
-## Possible GML and LMs for Xaymara's settlement
+## GML and LMs for Xaymara's settlement
 
 ```{r}
 ## model 1: generalized mixed model
@@ -490,7 +490,6 @@ anova(fit5, fit6, test = "Chi")
                            #expand = c(0.01, 0.01),
                            name=("Settlement proportion"))
   effects2
-  
 
 ## model 3: linear model
   fit7<-lm(Prop.settled ~Treatment,data=Survival.data2)
@@ -519,6 +518,7 @@ anova(fit5, fit6)
 #anova(fit7, fit8)
 ```
 
+# Final models
 
 ```{r, model summary - survivrship }
 Larvae_models<-list("Survivorship" = fit1, 
@@ -593,40 +593,40 @@ modelsummary(Larvae_models, stars = TRUE,
 
 ```
 
-## Possible GML and LMs for survivorship
+!## Possible GML and LMs for survivorship
 
 ```{r}
 ## model 1: generalized mixed model
-  fit13<-glmer(cbind(N.alive, N_Dead) ~Treatment +(1|Replicate),
-   data=Survival.data2,family="binomial")
-  anova(fit13)
-  summary(fit13)
-  plot(fit13)
-
-  # plot fixed effects correlation matrix
-  plot_model(fit13, type = "est", show.values=T, show.p = T)
-  plot_model(fit13, type = "eff")
-
-## model 2: generalized model
-  fit14<-glm(cbind(N.alive, N_Dead)~Treatment, data=Survival.data2,family=binomial)
-  anova(fit14)
-  summary(fit14)
-  
-  par(mfrow=c(2,2))
-  plot(fit14)
-  par(mfrow=c(1,1))
-  
-  plot_model(fit14, type = "est", show.values=T, show.p = T)
-  plot_model(fit14, type = "eff")
-
-## model 3: linear model
-  fit15<-lm(Prop_dead ~Treatment,data=Survival.data2)
-  anova(fit15)
-  summary(fit15)
-  par(mfrow=c(2,2))
-  plot(fit15)
-  par(mfrow=c(1,1))
-  
+#   fit13<-glmer(cbind(N.alive, N_Dead) ~Treatment +(1|Replicate),
+#    data=Survival.data2,family="binomial")
+#   anova(fit13)
+#   summary(fit13)
+#   plot(fit13)
+# 
+#   # plot fixed effects correlation matrix
+#   plot_model(fit13, type = "est", show.values=T, show.p = T)
+#   plot_model(fit13, type = "eff")
+# 
+# ## model 2: generalized model
+#   fit14<-glm(cbind(N.alive, N_Dead)~Treatment, data=Survival.data2,family=binomial)
+#   anova(fit14)
+#   summary(fit14)
+#   
+#   par(mfrow=c(2,2))
+#   plot(fit14)
+#   par(mfrow=c(1,1))
+#   
+#   plot_model(fit14, type = "est", show.values=T, show.p = T)
+#   plot_model(fit14, type = "eff")
+# 
+# ## model 3: linear model
+#   fit15<-lm(Prop_dead ~Treatment,data=Survival.data2)
+#   anova(fit15)
+#   summary(fit15)
+#   par(mfrow=c(2,2))
+#   plot(fit15)
+#   par(mfrow=c(1,1))
+#   
   ## model 4: mixed linear model
    # fit16 <- lmer(Prop.settled.SQRT.ASIN.~ Treatment + (1|Replicate), 
    #              REML=TRUE, data= Survival.data2)
