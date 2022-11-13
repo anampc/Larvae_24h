@@ -490,7 +490,6 @@ anova(fit5, fit6, test = "Chi")
                            #expand = c(0.01, 0.01),
                            name=("Settlement proportion"))
   effects2
-  
 
 ## model 3: linear model
   fit7<-lm(Prop.settled ~Treatment,data=Survival.data2)
