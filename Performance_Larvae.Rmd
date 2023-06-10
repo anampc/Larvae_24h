@@ -92,6 +92,8 @@ Surv
 
 ## Possible GML and LMs 
 
+Model 1 (fit1) is the best
+
 ```{r}
 ## model 1: generalized mixed model
   fit1<-glmer(cbind(Swimming, Dead) ~Treatment +(1|Replicate),
@@ -100,6 +102,12 @@ Surv
     summary(fit1)
     plot(fit1)
     1-pchisq(1452.3-1433.9, 1093-1092)
+    
+    # Pairwise comparisons
+  # Day specific comparisons
+  Sw.emmc<-emmeans(fit1, ~Treatment)
+  Sw_groups<-cld(Sw.emmc)
+  Sw_groups
 
 
   odds1<-plot_model(fit1, type = "est", show.values=T, show.p = T) +theme_sjplot()
@@ -149,12 +157,6 @@ Surv
   ranova(fit4)
   step(fit4)
   plot(fit4)
-  
-# Pairwise comparisons
-  # Day specific comparisons
-  Sw.emmc<-emmeans(fit4, ~Treatment)
-  Sw_groups<-cld(Sw.emmc)
-  Sw_groups
 
 ```
 
@@ -492,6 +494,12 @@ anova(fit5, fit6, test = "Chi")
                            #expand = c(0.01, 0.01),
                            name=("Settlement proportion"))
   effects2
+  
+  # Pairwise comparisons
+  # Day specific comparisons
+  Sw.emmc<-emmeans(fit5, ~Treatment)
+  Sw_groups<-cld(Sw.emmc)
+  Sw_groups
 
 ## model 3: linear model
   fit7<-lm(Prop.settled ~Treatment,data=Survival.data2)
@@ -510,13 +518,9 @@ anova(fit5, fit6, test = "Chi")
   plot(fit8)
   
 
-# Pairwise comparisons
-  # Day specific comparisons
-  Sw.emmc<-emmeans(fit8, ~Treatment)
-  Sw_groups<-cld(Sw.emmc)
-  Sw_groups
 
-anova(fit5, fit6)
+
+anova(fit5, fit6, fit7, fit8)
 #anova(fit7, fit8)
 ```
 
@@ -699,18 +703,21 @@ Figure_S1
 Larvae<- ggplot(data, aes (Treatment, nmol.larva.min)) +
   #geom_boxplot ()+
   stat_summary(fun.data = "mean_cl_boot",geom = "errorbar", width = 0.2 , color="black")+
-  stat_summary(fun=mean, geom="point") + 
+  stat_summary(fun=mean, geom="point", size=2) + 
   #geom_point(shape=21)+
 
-  geom_jitter(alpha=0.5, shape=21)+
+  geom_jitter(alpha=0.5, shape=21, width = 0.2)+
   theme(legend.position = "bottom")+
   scale_y_continuous(#limits = c(0, 1),
                       #   breaks = seq(0,1,0.2),  
                       #   expand = c(0.01, 0.01),
-                         name=("O2 [nmol/min/larva]")) +
+                      name=expression(
+                        O[2]~consumption~per~larva~(nmol~min^-1))) +
   ggthe_bw +
   facet_grid(~Timepoint)
 Larvae
+
+#ggsave(file="Outputs/S4_Oxygen.svg", plot=Larvae, width=8, height=4)
 
 LogLarvae<- ggplot(data, aes (Treatment, log(nmol.larva.min))) +
   #geom_boxplot ()+
