@@ -289,30 +289,29 @@ Multiple comparisons
 
 ```{r, model summary - coeficients }
 Larvae_models<-list("Survivorship" = fit1.1, 
-                   "Settlement" = fit4)
+                   "Settlement" = fit5)
 modelsummary(Larvae_models, stars = TRUE, 
              #statistic = c('std.error', 'p.value', 'conf.int'),
              title = 'Larvae performance models outputs')
 #modelsummary(Larvae_models, estimate = "p.value")
 ```
 
-# Figure 1
+# Figure 2 (in the manuscript)
 
 ```{r}
 
 Figure_1<- plot_grid(effects1, effects2, labels = "AUTO")
 Figure_1
-#ggsave(file="Outputs/Figure1.svg", plot=Figure_1, width=8, height=4)
+#ggsave(file="Outputs/Figure1_R1.svg", plot=Figure_1, width=8, height=4)
 
 ```
 
-# Figure S1
+# Figure S3 (in the manuscript)
 
 ```{r}
-
 Figure_S1<-plot_grid(odds1, odds2, labels = "AUTO")
 Figure_S1
-#ggsave(file="Outputs/FigureS1.svg", plot=Figure_S1, width=12, height=4)
+#ggsave(file="Outputs/FigureS1_R1.svg", plot=Figure_S1, width=12, height=4)
 ```
 
 # 3 Respiration (non-significant)
@@ -335,6 +334,8 @@ Figure_S1
 ```
 
 ## Basic plots - by larva
+
+Figure S4
 
 ```{r}
 Larvae<- ggplot(data, aes (Treatment, nmol.larva.min)) +
@@ -389,21 +390,21 @@ Raw data
 
 ```{r}
 # Raw data model
-  fit5<-lmer(nmol.larva.min ~Treatment*Timepoint + 
-             (1|Replicate.vial) + (1|Plate..) + (1|Well), data=data)
-      anova(fit5)
-      ranova(fit5)
-      #summary(fit5)
-      plot(fit5)
-      step(fit5)
-  fit6<-lmer(nmol.larva.min ~ Timepoint + (1 | Well), data=data)
+  fit6<-lmer(nmol.larva.min ~Treatment*Timepoint + 
+             (1|Replicate.vial) + (1|Plate..) + (1|Well), data=data, REML = TRUE)
       anova(fit6)
       ranova(fit6)
-      summary(fit6)
+      #summary(fit6)
       plot(fit6)
+      step(fit6)
+  fit7<-lmer(nmol.larva.min ~ Timepoint + (1 | Well), data=data, REML = TRUE)
+      anova(fit7)
+      ranova(fit7)
+      summary(fit7)
+      plot(fit7)
 
 #Pairwise comparisons
-  Sw.emmc<-emmeans(fit6, ~Timepoint)
+  Sw.emmc<-emmeans(fit7, ~Timepoint)
   Sw_groups<-cld(Sw.emmc)
   Sw_groups
 ```
@@ -411,18 +412,18 @@ Raw data
 log transformed data
 
 ```{r}
- fit5.1<-lmer(log(nmol.larva.min) ~Treatment*Timepoint + 
+ fit6.1<-lmer(log(nmol.larva.min) ~Treatment*Timepoint + 
              (1|Replicate.vial) + (1|Plate..) + (1|Well), data=data)
-      anova(fit5.1)
-      ranova(fit5.1)
-      summary(fit5.1)
-      plot(fit5.1)
-      step(fit5.1)
-  fit6.2<-lmer(log(nmol.larva.min) ~ Timepoint + (1 | Well), data=data)
-      anova(fit6.2)
-      ranova(fit6.2)
-      summary(fit6.2)
-      plot(fit6.2)
+      anova(fit6.1)
+      ranova(fit6.1)
+      summary(fit6.1)
+      plot(fit6.1)
+      step(fit6.1)
+  fit7.2<-lmer(log(nmol.larva.min) ~ Timepoint + (1 | Well), data=data)
+      anova(fit7.2)
+      ranova(fit7.2)
+      summary(fit7.2)
+      plot(fit7.2)
 ```
 
 Only time point and well are significant factors for respiration 
