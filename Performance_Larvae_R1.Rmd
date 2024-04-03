@@ -115,7 +115,7 @@ Other models tested ... they were not as good as the one chosen above
   #plot_model(fit2, type = "est",  show.values=T, show.p = T)
   #plot_model(fit2, type = "eff", terms="Treatment")
   #par(mfrow=c(1,1))
-  anova(fit1.1, fit2)
+  anova(fit1, fit1.1, fit2)
   #Model 1.1 is better and used for downstream multicomp and plots
 ```
 
